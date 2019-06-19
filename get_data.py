@@ -33,8 +33,8 @@ class GetAndExportArticleData(object):
                 raise ValueError(
                     "The Article you are looking for could not be found")
             except ValueError:
-                sys.exit({"message": "The Article you are looking for could!!!"
-                          "not be found",
+                sys.exit({"message": "The Article you are looking for could "
+                          "not be found!!!",
                           "status": 404})
 
         return data
@@ -94,10 +94,10 @@ class GetAndExportArticleData(object):
                 })
 
         if file_type == "json" and not default_name:
-            default_name = "data.json"
+            default_name = "articledata.json"
 
         elif file_type == "csv" and not default_name:
-            default_name = "data.csv"
+            default_name = "articledata.csv"
 
         new_file_path = '/'.join([BASE_DIR, default_name])
         exists = self.check_path_exists(new_file_path)
@@ -118,18 +118,22 @@ class GetAndExportArticleData(object):
         else:
             return default_name
 
-    def export_to_json(self):
+    def export_to_json(self, fname=None):
         """Export and write data to json file."""
         json_data = self.conver_to_json()
-        file_name = self.autogen_filename('json')
+        if len(json_data) > 10 and not fname:
+            fname = json_data["slug"] + ".json"
+        file_name = self.autogen_filename('json', default_name=fname)
 
         with open(file_name, 'w+') as json_file:
             json.dump(json_data, json_file, indent=4)
 
-    def export_to_csv(self):
+    def export_to_csv(self, fname=None):
         """Export and write data to csv file."""
         csv_data = self.convert_to_csv()
-        file_name = self.autogen_filename('csv')
+        if len(csv_data) == 2 and not fname:
+            fname = csv_data[1][9] + '.csv'
+        file_name = self.autogen_filename('csv', default_name=fname)
 
         csv.register_dialect(
             'ahMiniData',
@@ -141,9 +145,3 @@ class GetAndExportArticleData(object):
             write_file = csv.writer(writter, dialect='ahMiniData')
             for row in csv_data:
                 write_file.writerow(row)
-
-
-GET_ARTICLES_URL = 'https://ah-django-staging.herokuapp.com/api/articles/feed/'  # noqa
-GET_ARTICLE_URL = 'https://ah-django-staging.herokuapp.com/api/articles/new_wangonya/'  # noqa
-print_json = GetAndExportArticleData(GET_ARTICLE_URL)
-print_json.export_to_csv()
