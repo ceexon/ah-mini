@@ -2,3 +2,8 @@
 env/
 *.json
 *.csv
+
+__pycache__/
+*.pyc
+.pytest_cache/
+a_haven.egg-info/
