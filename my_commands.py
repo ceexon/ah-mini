@@ -36,9 +36,9 @@ def get_single_article(slug):
 
 
 @main.command()
-@click.option("--list", "-l",
+@click.option("--list-all", "-l",
               help="This command prints all articles on the terminal")
-def list(list):
+def list_all(list_all):
     """Print all articles to the terminal."""
     click.echo(get_all_articles())
 
